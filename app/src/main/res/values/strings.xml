@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">StaffApplication</string>
+    <!-- Room List -->
+    <string-array name="room_list">
+        <item>Room 101</item>
+        <item>Room 102</item>
+        <item>Room 103</item>
+        <item>Room 104</item>
+    </string-array>
+
+    <!-- Status List -->
+    <string-array name="status_list">
+        <item>Available</item>
+        <item>Do Not Disturb</item>
+        <item>Booked</item>
+    </string-array>
+</resources>
