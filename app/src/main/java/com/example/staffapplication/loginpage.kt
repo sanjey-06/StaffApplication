@@ -51,29 +51,35 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    // Function to authenticate staff credentials
     private fun authenticateStaff(staffId: String, staffPassword: String) {
-        database.child(staffId).get().addOnSuccessListener { snapshot ->
-            if (snapshot.exists()) {
-                val dbStaffId = snapshot.child("staffId").value.toString()
-                val dbPassword = snapshot.child("password").value.toString()
+        try {
+            // Retrieve the staff information from Firebase
+            database.child(staffId).get().addOnSuccessListener { snapshot ->
+                if (snapshot.exists()) {
+                    val dbPassword = snapshot.child("password").value?.toString() ?: ""
 
-                if (staffId == dbStaffId && staffPassword == dbPassword) {
-                    // Redirect to StaffPage if authenticated
-                    val intent = Intent(this, StaffPage::class.java)
-                    startActivity(intent)
-                    finish()
+                    if (staffPassword == dbPassword) {
+                        // Proceed with login if passwords match
+                        val intent = Intent(this, StaffPage::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // Show invalid password message
+                        Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    // Show error message if credentials are incorrect
-                    Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                    // Staff ID not found
+                    Toast.makeText(this, "Staff ID not found", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                // Show error message if staff ID doesn't exist
-                Toast.makeText(this, "Staff ID not found", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { exception ->
+                // Handle failure cases
+                Toast.makeText(this, "Failed to authenticate: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
-        }.addOnFailureListener {
-            // Show error message if fetching data fails
-            Toast.makeText(this, "Failed to authenticate", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            // Catch any exceptions that may occur during the authentication process
+            Toast.makeText(this, "An error occurred: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 }
